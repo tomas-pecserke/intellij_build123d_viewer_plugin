@@ -1,0 +1,42 @@
+name: Gradle Package
+
+on:
+  push:
+    branches:
+      - main
+      - 'releases/**'
+    tags:
+      - v*
+  pull_request:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          add-job-summary-as-pr-comment: on-failure
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: "yes"
+          develocity-injection-enabled: true
+          develocity-url: https://scans.gradle.com
+          develocity-plugin-version: 3.18.1
+      - name: Build with Gradle
+        run: ./gradlew build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-artifacts
+          path: build/distributions/

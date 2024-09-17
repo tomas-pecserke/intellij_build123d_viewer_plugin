@@ -28,10 +28,6 @@ intellijPlatform {
     projectName = project.name
 
     pluginConfiguration {
-        id = "io.github.tomaspecserke.build123dviewerplugin"
-        name = "Build123D Plugin"
-        description = "3D model visualizer plugin for Build123D CAD library</description>"
-
         ideaVersion {
             sinceBuild = "242.21829.153"
         }
@@ -54,7 +50,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEa
 
 tasks.compileJava.configure {
     targetCompatibility = "17"
-    //version = JavaVersion.VERSION_17
 }
 
 tasks.compileKotlin.configure {

@@ -1,5 +1,8 @@
 # IntelliJ Build123d Viewer Plugin
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/tomas-pecserke/intellij_build123d_viewer_plugin/gradle.yml)
+![GitHub License](https://img.shields.io/github/license/tomas-pecserke/intellij_build123d_viewer_plugin)
+
 [Build123d CAD Viewer Plugin] adds a preview support for 3D models created with [Build123d]
 to the [JetBrains IDEs] (mainly [PyCharm]).
 
