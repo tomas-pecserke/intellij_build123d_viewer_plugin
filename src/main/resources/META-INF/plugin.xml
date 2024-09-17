@@ -1,0 +1,25 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>io.github.tomaspecserke.intellij.plugins.build123d.viewer</id>
+
+    <name>Build123d Viewer</name>
+    <description>Build123D CAD library 3D model visualizer plugin</description>
+
+    <vendor email="tomas.pecserke@proton.me" url="https://github.com/tomas-pecserke/">Tomáš Pecsérke</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.python</depends>
+    <depends>PythonCore</depends>
+
+    <resource-bundle>messages.Build123dBundle</resource-bundle>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <registryKey key="ide.browser.jcef.build123dView.osr.enabled" defaultValue="true"
+                     description="Whether the Build123d view should be displayed in the off-screen mode."/>
+
+        <fileEditorProvider id="build123d-preview-editor"
+                            implementation="io.github.tomaspecserke.intellij.plugins.build123d.viewer.ui.preview.Build123dSplitEditorProvider"/>
+    </extensions>
+</idea-plugin>

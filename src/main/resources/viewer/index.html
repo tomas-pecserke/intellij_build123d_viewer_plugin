@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block !important;
+        }
+    </style>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+          }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+        import {STLLoader} from 'three/addons/loaders/STLLoader.js';
+        import WebGL from 'three/addons/capabilities/WebGL.js';
+
+        let scene = undefined;
+
+        if (WebGL.isWebGL2Available()) {
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x222222);
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            const gridHelper = new THREE.GridHelper(1000, 100);
+            scene.add(gridHelper);
+
+            const axesHelper = new THREE.AxesHelper(1000);
+            scene.add(axesHelper);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff);
+            scene.add(ambientLight);
+
+            const light1 = new THREE.DirectionalLight(0xffffff, 3);
+            light1.position.set(1000, 1000, 1000);
+            scene.add(light1);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.update();
+
+            camera.position.x = 50;
+            camera.position.y = 50;
+            camera.position.z = 50;
+
+            function animate() {
+                controls.update();
+                renderer.render(scene, camera);
+            }
+
+            renderer.setAnimationLoop(animate);
+        } else {
+            const warning = WebGL.getWebGL2ErrorMessage();
+            document.getElementById('container').appendChild(warning);
+        }
+
+        const loader = new STLLoader();
+        const colors = [
+            0x9BF6FF,
+            0xCAFFBF,
+            0xFDFFB6,
+            0xFFD6A5,
+            0xFFADAD,
+
+            0xFFAAFF,
+            0xFDFFB6,
+            0xB2FFA3,
+            0x94F6FF,
+            0x7FB0FF
+        ];
+        let meshes = {};
+
+        function dispose(mesh) {
+            mesh.geometry.dispose();
+            mesh.material.dispose();
+            scene.remove(mesh);
+        }
+
+        function loadModel(name, modelUri, meshes) {
+            loader.load(modelUri, function (geometry) {
+                geometry.rotateX(-90 * Math.PI / 180);
+                console.log('loaded: ' + name);
+                const index = Object.getOwnPropertyNames(meshes).length;
+                const material = new THREE.MeshStandardMaterial({color: colors[index]});
+                const mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
+                meshes[name] = mesh;
+            });
+        }
+
+        function loadModels(models) {
+            if (scene === undefined) {
+                return
+            }
+
+            Object.getOwnPropertyNames(meshes).forEach(function (name) {
+                dispose(meshes[name]);
+            });
+            let newMeshes = {};
+
+            Object.getOwnPropertyNames(models).forEach(function (name) {
+                console.log('loading: ' + name);
+                const dataUri = "data:text/plain;base64," + btoa(models[name]);
+                loadModel(name, dataUri, newMeshes);
+            });
+            meshes = newMeshes;
+        }
+
+        window.loadModels = loadModels;
+    </script>
+</head>
+
+<body>
+</body>
+</html>
